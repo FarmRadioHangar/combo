@@ -6,14 +6,19 @@ import (
 	"fmt"
 )
 
+// Token type represents the type of token that has been lexed.
 type TokenType int
 
+//Token is an interface for a meningful portion of text input
+// There is no assumption made by this libray, tokens can be implemented by the
+// consumers of this library
 type Token interface {
 	Position
 	Value() string
 	Type() TokenType
 }
 
+// Position is an interface for the location of the text iput.
 type Position interface {
 	Left() int
 	Right() int
@@ -44,7 +49,7 @@ func (s *simpleToken) Right() int {
 	return s.right
 }
 
-func errorMSG(msg string, pos int, ch, expect string) error {
+func ErrorMSG(msg string, pos int, ch, expect string) error {
 	return fmt.Errorf(">> error>>%s at: %d, found %s expecting: %s ", msg, pos, ch, expect)
 }
 
@@ -141,7 +146,7 @@ func StringLex(s string, typ TokenType) Lexer {
 			size = size + sz
 			if ch != v {
 				b.Seek(int64(left), 0)
-				return nil, errorMSG("unexpected token", left+size, string(ch), string(v))
+				return nil, ErrorMSG("unexpected token", left+size, string(ch), string(v))
 			}
 		}
 		return NewToken(typ, s, left, left+len(s)), nil
@@ -157,7 +162,7 @@ func RuneLex(r rune, typ TokenType) Lexer {
 		}
 		if ch != r {
 			b.UnreadRune()
-			return nil, errorMSG("unexpected token", left+size, string(ch), string(r))
+			return nil, ErrorMSG("unexpected token", left+size, string(ch), string(r))
 		}
 		return NewToken(typ, string(ch), left, left+size), nil
 	}
