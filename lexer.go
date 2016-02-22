@@ -48,7 +48,7 @@ func errorMSG(msg string, pos int, ch, expect string) error {
 	return fmt.Errorf(">> error>>%s at: %d, found %s expecting: %s ", msg, pos, ch, expect)
 }
 
-func newToken(typ TokenType, val string, left, right int) Token {
+func NewToken(typ TokenType, val string, left, right int) Token {
 	return &simpleToken{
 		typ:   typ,
 		val:   val,
@@ -144,7 +144,7 @@ func StringLex(s string, typ TokenType) Lexer {
 				return nil, errorMSG("unexpected token", left+size, string(ch), string(v))
 			}
 		}
-		return newToken(typ, s, left, left+len(s)), nil
+		return NewToken(typ, s, left, left+len(s)), nil
 	}
 }
 
@@ -159,6 +159,6 @@ func RuneLex(r rune, typ TokenType) Lexer {
 			b.UnreadRune()
 			return nil, errorMSG("unexpected token", left+size, string(ch), string(r))
 		}
-		return newToken(typ, string(ch), left, left+size), nil
+		return NewToken(typ, string(ch), left, left+size), nil
 	}
 }
